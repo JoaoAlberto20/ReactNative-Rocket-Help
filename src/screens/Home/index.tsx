@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {  useNavigation } from '@react-navigation/native'
 
 import {
   VStack,
@@ -20,9 +21,25 @@ import Button from '../../components/Button';
 
 export default function Home(){
   const [ statusSelected, setStatusSelected] = useState<'open' | 'closed'>('open');
-  const [orders, setOrders] = useState<OrderProps[]>([])
+  const [orders, setOrders] = useState<OrderProps[]>([
+    {
+      id: '456',
+      patrimony: '123456',
+      when: '18/07/2022 às 14:00',
+      status: 'open'
+    }
+  ])
 
+  const navigation = useNavigation();
   const {colors} = useTheme();
+
+  const handleNewOrder = () => {
+    navigation.navigate('new');
+  }
+
+  const handleOpenDetails = (orderId: string) => {
+    navigation.navigate('details', { orderId })
+  }
 
   return (
     <VStack flex={1} pb={6} bg="gray.700" >
@@ -77,7 +94,7 @@ export default function Home(){
         <FlatList 
           data={orders} 
           keyExtractor={item => item.id}
-          renderItem={({item}) => <Orders data={item}/>}
+          renderItem={({item}) => <Orders data={item} onPress={() => handleOpenDetails(item.id)}/>}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 100 }}
           ListEmptyComponent={() => (
@@ -91,7 +108,7 @@ export default function Home(){
           )}
         />
 
-        <Button title='Nova solicitação' />
+        <Button title='Nova solicitação' onPress={handleNewOrder}/>
       </VStack>
     </VStack>
   );
